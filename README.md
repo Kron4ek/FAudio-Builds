@@ -5,6 +5,6 @@ To install, copy (or symlink) all dlls to "prefix_path/drive_c/windows/system32"
 
     WINEPREFIX="$HOME/.just_prefix" ./wine_setup_faudio.sh
     
-Script make symlinks to FAudio dlls, so don't remove FAudio directory after installation.
+Script create symlinks to FAudio dlls, so don't remove FAudio directory after installation.
 
 Source: https://github.com/FNA-XNA/FAudio
