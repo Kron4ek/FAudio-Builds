@@ -88,6 +88,8 @@ else
 
 		NOFAUDIO32=1
 	fi
+	
+	NOFAUDIO64=1
 fi
 
 override_dll () {
