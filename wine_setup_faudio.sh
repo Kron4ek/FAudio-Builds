@@ -13,6 +13,14 @@ else
 	echo "WINEPREFIX is set to $WINEPREFIX"
 fi
 
+if [ -z "$WINE" ]; then
+	WINE=wine
+
+	echo "WINE is not specified, using default wine binary"
+else
+	echo "WINE is set to $WINE"
+fi
+
 if [ ! -f "$WINEPREFIX/system.reg" ]; then
 	echo "$WINEPREFIX does not seem like a valid Wine prefix"
 
@@ -41,6 +49,17 @@ if [ -z "$FAUDIO64_PATH" ]; then
 	FAUDIO64_PATH="$DIR/x64"
 else
 	echo "FAUDIO64_PATH is set to $FAUDIO64_PATH"
+fi
+
+if ! "$WINE" --version &>/dev/null; then
+	echo
+	echo "Seems like Wine is not installed in your system."
+	echo "Please, install Wine and launch script again."
+	echo
+	echo "If Wine is installed in different location,"
+	echo "set WINE variable to path to wine binary."
+	
+	exit
 fi
 
 echo -e "\n$WINEPREFIX is a $PREFIX_ARCH-bit prefix\n"
@@ -98,7 +117,7 @@ override_dll () {
 	name=$1
 
 	# update registry
-	log=$(wine reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v $name /d native /f 2>>/dev/null)
+	log=$("$WINE" reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v $name /d native /f 2>>/dev/null)
 
 	if [ $? -ne 0 ]; then
 		echo "Failed to update registry for $name"
