@@ -3,7 +3,7 @@ Latest FAudio builds (dlls) for Wine. Compiled with FFmpeg (and therefore WMA) s
 
 To install, copy (or create symlinks) all dlls to **"PREFIX_PATH/drive_c/windows/system32"** directory and override them to "Native" in winecfg. Or just use **"wine_setup_faudio.sh"** script, for example:
 
-    WINEPREFIX="$HOME/.some_prefix" ./wine_setup_faudio.sh
+    WINEARCH=win64 WINEPREFIX="$HOME/.some_prefix" ./wine_setup_faudio.sh
     
 Script create symlinks to FAudio dlls, so **don't remove** FAudio directory after installation.
 
