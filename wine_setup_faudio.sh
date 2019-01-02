@@ -21,8 +21,10 @@ fi
 
 if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
 	PREFIX_ARCH=64
+	WINEARCH=win64
 else
 	PREFIX_ARCH=32
+	WINEARCH=win32
 fi
 
 if [ -z "$FAUDIO32_PATH" ]; then
