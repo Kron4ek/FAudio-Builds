@@ -1,5 +1,5 @@
 # FAudio Builds
-Latest FAudio builds (dlls) for Wine. Compiled with FFmpeg (and therefore WMA) support.
+FAudio MinGW (dlls) builds for Wine. Compiled with FFmpeg (and therefore WMA) support.
 
 To install, copy (or create symlinks) all dlls to **"PREFIX_PATH/drive_c/windows/system32"** directory and override them to "Native" in winecfg. Or just use **"wine_setup_faudio.sh"** script, for example:
 
