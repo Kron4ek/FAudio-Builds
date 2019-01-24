@@ -22,8 +22,7 @@ else
 fi
 
 if [ ! -f "$WINEPREFIX/system.reg" ]; then
-	echo "$WINEPREFIX does not seem like a valid Wine prefix"
-
+	echo -e "\n$WINEPREFIX does not seem like a valid Wine prefix"
 	exit 1
 fi
 
@@ -58,20 +57,30 @@ if ! "$WINE" --version &>/dev/null; then
 	echo
 	echo "If Wine is installed in different location,"
 	echo "set WINE variable to path to wine binary."
-	
+
 	exit
 fi
 
 echo -e "\n$WINEPREFIX is a $PREFIX_ARCH-bit prefix\n"
+
+override_dll () {
+	"$WINE" reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v $1 /d native /f &>/dev/null
+
+	if [ $? -ne 0 ]; then
+		echo "Failed to override $1"
+		exit 1
+	fi
+}
 
 if [ $PREFIX_ARCH = 64 ]; then
 	if ls "$FAUDIO64_PATH"/*.dll &>/dev/null; then
 		echo -e "Installing 64-bit FAudio dlls\n"
 
 		for x in "$FAUDIO64_PATH"/*.dll; do
-			echo "Installing $x"
+			echo "Installing $(basename "$x")"
 
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
+			cp "$x" "$WINEPREFIX/drive_c/windows/system32"
+			override_dll $(basename "$x" .dll)
 		done
 	else
 		echo -e "\n64-bit FAudio dlls not found"
@@ -84,9 +93,10 @@ if [ $PREFIX_ARCH = 64 ]; then
 		echo -e "\nInstalling 32-bit FAudio dlls\n"
 
 		for x in "$FAUDIO32_PATH"/*.dll; do
-			echo "Installing $x"
+			echo "Installing $(basename "$x")"
 
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/syswow64"
+			cp "$x" "$WINEPREFIX/drive_c/windows/syswow64"
+			override_dll $(basename "$x" .dll)
 		done
 	else
 		echo -e "\n32-bit FAudio dlls not found"
@@ -99,9 +109,10 @@ else
 		echo -e "Installing 32-bit FAudio dlls\n"
 
 		for x in "$FAUDIO32_PATH"/*.dll; do
-			echo "Installing $x"
+			echo "Installing $(basename "$x")"
 
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
+			cp "$x" "$WINEPREFIX/drive_c/windows/system32"
+			override_dll $(basename "$x" .dll)
 		done
 	else
 		echo -e "\n32-bit FAudio dlls not found"
@@ -109,59 +120,11 @@ else
 
 		NOFAUDIO32=1
 	fi
-	
+
 	NOFAUDIO64=1
 fi
 
-override_dll () {
-	name=$1
-
-	# update registry
-	log=$("$WINE" reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v $name /d native /f 2>>/dev/null)
-
-	if [ $? -ne 0 ]; then
-		echo "Failed to update registry for $name"
-		exit 1
-	fi
-
-	echo "$name: done"
-}
-
 if [ -z $NOFAUDIO32 ] || [ -z $NOFAUDIO64 ]; then
-	echo -e "\nOverriding dlls\n"
-
-	override_dll xaudio2_0
-	override_dll xaudio2_1
-	override_dll xaudio2_2
-	override_dll xaudio2_3
-	override_dll xaudio2_4
-	override_dll xaudio2_5
-	override_dll xaudio2_6
-	override_dll xaudio2_7
-	override_dll xaudio2_8
-	override_dll xaudio2_9
-
-	override_dll x3daudio1_3
-	override_dll x3daudio1_4
-	override_dll x3daudio1_5
-	override_dll x3daudio1_6
-	override_dll x3daudio1_7
-
-	override_dll xactengine3_0
-	override_dll xactengine3_1
-	override_dll xactengine3_2
-	override_dll xactengine3_3
-	override_dll xactengine3_4
-	override_dll xactengine3_5
-	override_dll xactengine3_6
-	override_dll xactengine3_7
-
-	override_dll xapofx1_1
-	override_dll xapofx1_2
-	override_dll xapofx1_3
-	override_dll xapofx1_4
-	override_dll xapofx1_5
-
 	echo
 
 	if [ -z $NOFAUDIO32 ]; then echo "32-bit FAudio installed"; fi
@@ -170,7 +133,7 @@ if [ -z $NOFAUDIO32 ] || [ -z $NOFAUDIO64 ]; then
 		if [ -z $NOFAUDIO64 ]; then echo "64-bit FAudio installed"; fi
 	fi
 
-	echo "Installation completed!"
+	echo -e "\nInstallation completed!"
 else
 	echo "FAudio not found. Nothing to install."
 	echo "Check if FAUDIO32_PATH and FAUDIO64_PATH are correct."
