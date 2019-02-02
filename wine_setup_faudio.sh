@@ -79,7 +79,7 @@ if [ $PREFIX_ARCH = 64 ]; then
 		for x in "$FAUDIO64_PATH"/*.dll; do
 			echo "Installing $(basename "$x")"
 
-			cp "$x" "$WINEPREFIX/drive_c/windows/system32"
+			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
 			override_dll $(basename "$x" .dll)
 		done
 	else
@@ -95,7 +95,7 @@ if [ $PREFIX_ARCH = 64 ]; then
 		for x in "$FAUDIO32_PATH"/*.dll; do
 			echo "Installing $(basename "$x")"
 
-			cp "$x" "$WINEPREFIX/drive_c/windows/syswow64"
+			ln -sf "$x" "$WINEPREFIX/drive_c/windows/syswow64"
 			override_dll $(basename "$x" .dll)
 		done
 	else
@@ -111,7 +111,7 @@ else
 		for x in "$FAUDIO32_PATH"/*.dll; do
 			echo "Installing $(basename "$x")"
 
-			cp "$x" "$WINEPREFIX/drive_c/windows/system32"
+			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
 			override_dll $(basename "$x" .dll)
 		done
 	else
