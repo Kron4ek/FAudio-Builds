@@ -1,4 +1,5 @@
 ## FAudio Builds
+
 FAudio MinGW (dlls) builds for Wine. Compiled with FFmpeg (and therefore WMA) support.
 
 ---
@@ -9,7 +10,7 @@ Use **wine_setup_faudio.sh** script to install FAudio. And don't forget to speci
 
     WINEPREFIX="$HOME/some_prefix" ./wine_setup_faudio.sh
     
-Script create symlinks to FAudio dlls, so **don't remove** FAudio directory after installation.
+Script creates symlinks to FAudio dlls, so **don't remove** FAudio directory after installation.
 
 ---
 
