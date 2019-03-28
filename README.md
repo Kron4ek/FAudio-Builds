@@ -16,6 +16,6 @@ Script creates symlinks to FAudio dlls, so **don't remove** FAudio directory aft
 
 ## FAudio description
 
-FAudio is an XAudio reimplementation, it fix sound issues in many games.
+FAudio is an XAudio reimplementation, it fixes sound issues in many games.
 
 https://github.com/FNA-XNA/FAudio
