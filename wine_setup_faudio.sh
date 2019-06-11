@@ -1,14 +1,11 @@
 #!/bin/bash
 
-export SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
-export DIR="$(dirname "$SCRIPT")"
-
-echo
+export DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 if [ -z "$WINEPREFIX" ]; then
 	WINEPREFIX="$HOME/.wine"
 
-	echo "WINEPREFIX is not specified, using $WINEPREFIX"
+	echo "WINEPREFIX is not specified, using ~/.wine"
 else
 	echo "WINEPREFIX is set to $WINEPREFIX"
 fi
@@ -26,20 +23,11 @@ if [ ! -f "$WINEPREFIX/system.reg" ]; then
 	exit 1
 fi
 
-if [ -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
-	PREFIX_ARCH=64
+if [ ! -d "$WINEPREFIX/drive_c/windows/syswow64" ]; then
+	echo "Seems like your WINEPREFIX is not a 64-bit prefix!"
+	exit 1
+else
 	WINEARCH=win64
-else
-	PREFIX_ARCH=32
-	WINEARCH=win32
-fi
-
-if [ -z "$FAUDIO32_PATH" ]; then
-	echo "FAUDIO32_PATH is not specified, using "${DIR}"/x32"
-
-	FAUDIO32_PATH="$DIR/x32"
-else
-	echo "FAUDIO32_PATH is set to $FAUDIO32_PATH"
 fi
 
 if [ -z "$FAUDIO64_PATH" ]; then
@@ -58,10 +46,8 @@ if ! "$WINE" --version &>/dev/null; then
 	echo "If Wine is installed in different location,"
 	echo "set WINE variable to path to wine binary."
 
-	exit
+	exit 1
 fi
-
-echo -e "\n$WINEPREFIX is a $PREFIX_ARCH-bit prefix\n"
 
 override_dll () {
 	"$WINE" reg add 'HKEY_CURRENT_USER\Software\Wine\DllOverrides' /v $1 /d native /f &>/dev/null
@@ -72,69 +58,20 @@ override_dll () {
 	fi
 }
 
-if [ $PREFIX_ARCH = 64 ]; then
-	if ls "$FAUDIO64_PATH"/*.dll &>/dev/null; then
-		echo -e "Installing 64-bit FAudio dlls\n"
+if ls "$FAUDIO64_PATH"/*.dll &>/dev/null; then
+	echo -e "\nInstalling 64-bit FAudio dlls\n"
 
-		for x in "$FAUDIO64_PATH"/*.dll; do
-			echo "Installing $(basename "$x")"
+	for x in "$FAUDIO64_PATH"/*.dll; do
+		echo "Installing $(basename "$x")"
 
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
-			override_dll $(basename "$x" .dll)
-		done
-	else
-		echo -e "\n64-bit FAudio dlls not found"
-		echo -e "Please, check if FAUDIO64_PATH is correct\n"
-
-		NOFAUDIO64=1
-	fi
-
-	if ls "$FAUDIO32_PATH"/*.dll &>/dev/null; then
-		echo -e "\nInstalling 32-bit FAudio dlls\n"
-
-		for x in "$FAUDIO32_PATH"/*.dll; do
-			echo "Installing $(basename "$x")"
-
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/syswow64"
-			override_dll $(basename "$x" .dll)
-		done
-	else
-		echo -e "\n32-bit FAudio dlls not found"
-		echo -e "Please, check if FAUDIO32_PATH is correct\n"
-
-		NOFAUDIO32=1
-	fi
+		ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
+		override_dll $(basename "$x" .dll)
+	done
 else
-	if ls "$FAUDIO32_PATH"/*.dll &>/dev/null; then
-		echo -e "Installing 32-bit FAudio dlls\n"
+	echo -e "\n64-bit FAudio dlls not found!"
+	echo -e "Please, check if FAUDIO64_PATH is correct\n"
 
-		for x in "$FAUDIO32_PATH"/*.dll; do
-			echo "Installing $(basename "$x")"
-
-			ln -sf "$x" "$WINEPREFIX/drive_c/windows/system32"
-			override_dll $(basename "$x" .dll)
-		done
-	else
-		echo -e "\n32-bit FAudio dlls not found"
-		echo -e "Please, check if FAUDIO32_PATH is correct\n"
-
-		NOFAUDIO32=1
-	fi
-
-	NOFAUDIO64=1
+	exit 1
 fi
 
-if [ -z $NOFAUDIO32 ] || [ -z $NOFAUDIO64 ]; then
-	echo
-
-	if [ -z $NOFAUDIO32 ]; then echo "32-bit FAudio installed"; fi
-
-	if [ $PREFIX_ARCH = 64 ]; then
-		if [ -z $NOFAUDIO64 ]; then echo "64-bit FAudio installed"; fi
-	fi
-
-	echo -e "\nInstallation completed!"
-else
-	echo "FAudio not found. Nothing to install."
-	echo "Check if FAUDIO32_PATH and FAUDIO64_PATH are correct."
-fi
+echo -e "\nInstallation complete!"
