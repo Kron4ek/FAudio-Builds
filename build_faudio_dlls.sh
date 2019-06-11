@@ -5,7 +5,7 @@
 ## Usage: ./build_faudio_dlls.sh 19.06
 
 TARGET_DIR="${HOME}"
-FFMPEG_DIR="${HOME}/ffmpeg-win/ffmpeg-4.1.3"
+FFMPEG_DIR="${HOME}"/ffmpeg-4.1.3-win64-dev
 
 cd "${TARGET_DIR}" || exit 1
 
@@ -14,7 +14,7 @@ tar xf $1.tar.gz
 
 cd FAudio-$1
 
-x86_64-w64-mingw32-cmake -H. -B_build_mingw64 -DCMAKE_INSTALL_PREFIX="${TARGET_DIR}/faudio_x64" -DBUILD_CPP=ON -DINSTALL_MINGW_DEPENDENCIES=ON -DFFMPEG=ON -DFFmpeg_INCLUDE_DIR="${FFMPEG_DIR}-win64-dev/include/"
+x86_64-w64-mingw32-cmake -H. -B_build_mingw64 -DCMAKE_INSTALL_PREFIX="${TARGET_DIR}/faudio_x64" -DBUILD_CPP=ON -DINSTALL_MINGW_DEPENDENCIES=ON -DFFMPEG=ON -DFFmpeg_INCLUDE_DIR="${FFMPEG_DIR}/include/"
 cmake --build _build_mingw64 --target install -- -j
 
 mkdir "${TARGET_DIR}/faudio-$1"
