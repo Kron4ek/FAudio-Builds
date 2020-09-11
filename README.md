@@ -12,7 +12,7 @@ I recommend to use native FAudio library whenever possible.
 
 ## Installation
 
-Use the **wine_setup_faudio.sh** script to install FAudio, and don't forget to specify path to your Wine prefix. For example:
+[**Download**](https://github.com/Kron4ek/FAudio-Builds/releases) release, extract the archive and use the **wine_setup_faudio.sh** script to install FAudio, and don't forget to specify path to your Wine prefix. For example:
 
     WINEPREFIX="$HOME/some_prefix" ./wine_setup_faudio.sh
     
