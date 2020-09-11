@@ -2,16 +2,30 @@
 
 FAudio MinGW (dlls) builds for Wine. Compiled with FFmpeg (and therefore WMA) support.
 
+### When are these MinGW builds useful?
+
+They are useful when using native FAudio library is not possible or difficult: old Linux distros that doesn't have FAudio in their repositories or old Wine versions (4.2 and older) that doesn't support native FAudio at all. They are also useful when native FAudio library is compiled without support for WMA decoding.
+
+I recommend to use native FAudio library whenever possible.
+
 ---
 
 ## Installation
 
-Use **wine_setup_faudio.sh** script to install FAudio. And don't forget to specify path to your Wine prefix. For example:
+Use the **wine_setup_faudio.sh** script to install FAudio, and don't forget to specify path to your Wine prefix. For example:
 
     WINEPREFIX="$HOME/some_prefix" ./wine_setup_faudio.sh
     
-Script creates symlinks to FAudio dlls, so **don't remove** FAudio directory after installation.
+It's also possible (but not necessary) to specify path to a Wine binary:
 
+    WINE=/opt/wine-staging/bin/wine WINEPREFIX="$HOME/some_prefix" ./wine_setup_faudio.sh
+    
+The script creates symlinks to FAudio dlls, so **do not remove** FAudio directory after installation.
+
+You can also use winetricks for installation:
+
+    WINEPREFIX="$HOME/some_prefix" winetricks faudio
+    
 ---
 
 ## FAudio description
