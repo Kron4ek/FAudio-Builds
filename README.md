@@ -8,6 +8,8 @@ They are useful when using native FAudio library is not possible or difficult: o
 
 I recommend to use native FAudio library whenever possible.
 
+Note that new Wine versions (6.20 and newer) include a MinGW (PE) build of FAudio and don't use (and don't need) the native FAudio library. However, i don't know if WMA supported.
+
 ---
 
 ## Installation
